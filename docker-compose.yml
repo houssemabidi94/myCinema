@@ -1,0 +1,32 @@
+version: '3'  #specify docker-compose version
+#Define services/containers to be run
+services:
+ mysql:
+  image: mysql:8.0.19
+  command: --default-authentication-plugin=mysql_native_password
+  container_name: mysql
+  environment:
+   - MYSQL_ROOT_PASSWORD=root
+   - MYSQL_DATABASE=db_cinema
+  ports:
+   - 3307:3306
+ cinema-back :
+  image : cinema-back
+  container_name: cinema-back
+  ports: 
+   - 8080:8080
+  build: ./backend
+  environment:
+   SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_cinema?autoReconnect=true&useSSL=false
+  depends_on: 
+   - mysql
+ cinema-front : #name of the first services
+  container_name : cinema-front
+  build : ./frontend #specify the directory of the Dockerfile
+  volumes : #volume binding
+  - './app:/usr/src/cinema'
+  ports : #speify the port forwarding
+  - "4200:4200" 
+
+
+  
